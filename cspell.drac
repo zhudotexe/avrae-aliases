@@ -1,0 +1,32 @@
+%##
+
+!cspell is a counterspell helper for games where multiple players have the Counterspell spell. Before a creature casts a spell, this alias
+rolls an Arcana check for each player in initiative and displays the information they know about the spell the creature is about to cast, using
+TCoE counterspell rules.
+
+Note that the DC 15 check to determine the spell level is a homerule.
+
+%!! cspell
+
+!alias cspell embed -footer "{{ctx.prefix}}{{ctx.alias}} <spell level> <spell name>" 
+<drac2>
+args = &ARGS&
+c = combat()
+if len(args) < 2 or c is None:
+  return '-desc "invalid args or channel must be in combat"'
+level = int(args[0])
+spell = ' '.join(args[1:])
+out = f'-title "{c.current.name} begins casting a spell..." -desc "DC 15 Arcana check to determine the spell\'s level. DC 15 + spell level Arcana check to determine the exact spell. Must have Arcana proficiency."'
+
+for combatant in c.combatants:
+  if combatant.skills.arcana.prof >= 1:
+    arc_roll = vroll(combatant.skills.arcana.d20())
+    out += f' -f "{combatant.name}|{str(arc_roll)}'
+    if arc_roll.total >= 15 + level:
+      out += f'\nYou know the spell is **{spell}**.'
+    elif arc_roll.total >= 15:
+      out += f'\nYou know the spell is a level **{level}** spell.'
+    out += '|inline"'
+
+return out
+</drac2>
