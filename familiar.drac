@@ -8,7 +8,9 @@ HELP_TEXT = "`!familiar set <creature>` - Sets your familiar's creature type\n" 
  "`!familiar remove` - Removes your familiar\n" \
  "`!fc <check>` - Roll a check\n" \
  "`!fs <save>` - Roll a save\n" \
- "`!fa <attack>` - Roll an attack"
+ "`!fa <action>` - Uses an action\n" \
+ "`!fjoin` - Adds your familiar to combat"
+
 args = &ARGS&
 familiar = load_json(get("familiarData", "{}"))
 out = []
