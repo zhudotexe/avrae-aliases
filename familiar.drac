@@ -23,7 +23,7 @@ if not args:
 else:
     if args[0] not in ("remove", "set", "name", "image"): return f'-desc "That\'s not a valid subcommand.\n\n{HELP_TEXT}"'
     if len(args) < 2 and args[0] == "remove":
-        delete_cvar("familiarData")
+        character().delete_cvar("familiarData")
         return '-desc "Okay, removed your familiar."'
     if len(args) < 2: return f'-desc "Not enough arguments.\n\n{HELP_TEXT}"'
     if args[0] == "set":
@@ -36,7 +36,7 @@ else:
     if args[0] == "image":
         familiar['image'] = args[1]
         out.append(f'-desc "Okay! Set your familiar\'s image.\n\n{HELP_TEXT}"')
-    set_cvar("familiarData", dump_json(familiar))
+    character().set_cvar("familiarData", dump_json(familiar))
 
 if 'image' in familiar:
     out.append(f'-thumb {familiar.image}')
@@ -57,7 +57,7 @@ if 'name' in familiar:
     title = f'-title "{familiar.name} makes a [cname] check!"'
 if 'image' in familiar:
     image = f'-thumb {familiar.image}'
-return f'mc "{familiar.type}" %1% {title} {image}'
+return f'''mc "{familiar.type}" &*& {title} {image}'''
 </drac2>
 
 %!! fs
@@ -73,7 +73,7 @@ if 'name' in familiar:
     title = f'-title "{familiar.name} makes a [sname]!"'
 if 'image' in familiar:
     image = f'-thumb {familiar.image}'
-return f'ms "{familiar.type}" %1% {title} {image}'
+return f'''ms "{familiar.type}" &*& {title} {image}'''
 </drac2>
 
 %!! fa
@@ -89,7 +89,7 @@ if 'name' in familiar:
     title = f'-title "{familiar.name} attacks with [aname]!"'
 if 'image' in familiar:
     image = f'-thumb {familiar.image}'
-return f'ma "{familiar.type}" %1% {title} {image}'
+return f'''ma "{familiar.type}" &*& {title} {image}'''
 </drac2>
 
 %##
