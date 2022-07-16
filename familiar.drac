@@ -2,14 +2,18 @@
 
 !alias familiar embed -title "<name>'s Familiar" -color <color>
 <drac2>
-HELP_TEXT = "`!familiar set <creature>` - Sets your familiar's creature type\n" \
- "`!familiar name <name>` - Sets your familiar's name\n" \
- "`!familiar image <url>` - Sets your familiar's image\n" \
- "`!familiar remove` - Removes your familiar\n" \
- "`!fc <check>` - Roll a check\n" \
- "`!fs <save>` - Roll a save\n" \
- "`!fa <attack>` - Roll an attack"
+HELP_TEXT = (
+    "`!familiar set <creature>` - Sets your familiar's creature type\n"
+    "`!familiar name <name>` - Sets your familiar's name\n"
+    "`!familiar image <url>` - Sets your familiar's image\n"
+    "`!familiar remove` - Removes your familiar\n"
+    "`!fc <check>` - Roll a check\n"
+    "`!fs <save>` - Roll a save\n"
+    "`!fa <action>` - Use an action\n"
+    "`!fjoin` - Adds your familiar to combat"
+)
 args = &ARGS&
+char = character()
 familiar = load_json(get("familiarData", "{}"))
 out = []
 
@@ -21,22 +25,25 @@ if not args:
     else:
         out.append(f'-desc "Your familiar is a {familiar.type}.\n\n{HELP_TEXT}"')
 else:
-    if args[0] not in ("remove", "set", "name", "image"): return f'-desc "That\'s not a valid subcommand.\n\n{HELP_TEXT}"'
+    if args[0] not in ("remove", "set", "name", "image"):
+        return f'-desc "That\'s not a valid subcommand.\n\n{HELP_TEXT}"'
     if len(args) < 2 and args[0] == "remove":
-        delete_cvar("familiarData")
+        char.delete_cvar("familiarData")
         return '-desc "Okay, removed your familiar."'
-    if len(args) < 2: return f'-desc "Not enough arguments.\n\n{HELP_TEXT}"'
+    if len(args) < 2:
+        return f'-desc "Not enough arguments.\n\n{HELP_TEXT}"'
     if args[0] == "set":
         familiar['type'] = args[1]
         out.append(f'-desc "Okay! Your familiar is a {args[1]}.\n\n{HELP_TEXT}"')
-    if 'type' not in familiar: return f'-desc "You should set your familiar\'s type first.\n\n{HELP_TEXT}"'
+    if 'type' not in familiar:
+        return f'-desc "You should set your familiar\'s type first.\n\n{HELP_TEXT}"'
     if args[0] == "name":
         familiar['name'] = args[1]
         out.append(f'-desc "Okay! Set your familiar\'s name to {args[1]}.\n\n{HELP_TEXT}"')
     if args[0] == "image":
         familiar['image'] = args[1]
         out.append(f'-desc "Okay! Set your familiar\'s image.\n\n{HELP_TEXT}"')
-    set_cvar("familiarData", dump_json(familiar))
+    char.set_cvar("familiarData", dump_json(familiar))
 
 if 'image' in familiar:
     out.append(f'-thumb {familiar.image}')
@@ -57,7 +64,7 @@ if 'name' in familiar:
     title = f'-title "{familiar.name} makes a [cname] check!"'
 if 'image' in familiar:
     image = f'-thumb {familiar.image}'
-return f'mc "{familiar.type}" %1% {title} {image}'
+return f'''mc "{familiar.type}" {title} {image} %*%'''
 </drac2>
 
 %!! fs
@@ -73,7 +80,7 @@ if 'name' in familiar:
     title = f'-title "{familiar.name} makes a [sname]!"'
 if 'image' in familiar:
     image = f'-thumb {familiar.image}'
-return f'ms "{familiar.type}" %1% {title} {image}'
+return f'''ms "{familiar.type}" {title} {image} %*%'''
 </drac2>
 
 %!! fa
@@ -89,7 +96,20 @@ if 'name' in familiar:
     title = f'-title "{familiar.name} attacks with [aname]!"'
 if 'image' in familiar:
     image = f'-thumb {familiar.image}'
-return f'ma "{familiar.type}" %1% {title} {image}'
+return f'''ma "{familiar.type}" {title} {image} %*%'''
+</drac2>
+
+%!! fjoin
+
+!alias fjoin
+<drac2>
+familiar = load_json(get("familiarData", "{}"))
+if not familiar:
+    return 'echo You have not set a familiar. Check out `!familiar`!'
+name = ''
+if 'name' in familiar:
+    name = f'-name "{familiar.name}"'
+return f'i madd "{familiar.type}" -h {name}'
 </drac2>
 
 %##
