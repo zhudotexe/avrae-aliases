@@ -64,7 +64,7 @@ if 'name' in familiar:
     title = f'-title "{familiar.name} makes a [cname] check!"'
 if 'image' in familiar:
     image = f'-thumb {familiar.image}'
-return f'''mc "{familiar.type}" {title} {image} %*%'''
+return f'''mc "{familiar.type}" %1% {title} {image}'''
 </drac2>
 
 %!! fs
@@ -80,7 +80,7 @@ if 'name' in familiar:
     title = f'-title "{familiar.name} makes a [sname]!"'
 if 'image' in familiar:
     image = f'-thumb {familiar.image}'
-return f'''ms "{familiar.type}" {title} {image} %*%'''
+return f'''ms "{familiar.type}" %1% {title} {image}'''
 </drac2>
 
 %!! fa
@@ -96,7 +96,7 @@ if 'name' in familiar:
     title = f'-title "{familiar.name} attacks with [aname]!"'
 if 'image' in familiar:
     image = f'-thumb {familiar.image}'
-return f'''ma "{familiar.type}" {title} {image} %*%'''
+return f'''ma "{familiar.type}" %1% {title} {image}'''
 </drac2>
 
 %!! fjoin
